@@ -19,7 +19,7 @@ void gal::lvl1()
     anim *h1 = new anim("/home/vaibhav/Desktop/Antrix0.1/Yaan1.png",65,65);
     h1->setPos(600,300);
     a1.push_back(h1);
-    b1.push_back(new bg("/home/vaibhav/Desktop/Antrix0.1/spacebg.png"));
+    b1.push_back(new bg("/home/vaibhav/Desktop/Antrix0.1x/spacebg.png"));
     b1.push_back(new bg("/home/vaibhav/Desktop/Antrix0.1/star.png"));
 
     v1 = win->getDefaultView();

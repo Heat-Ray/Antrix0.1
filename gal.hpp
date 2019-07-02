@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
+#define PI 3.14159265
 
 using namespace std;
 using namespace sf;
@@ -11,6 +12,10 @@ class gal
     void suno();
     void socho();
     void karo();
+    //
+
+    //class dec
+    class ai;
     //
 
     // background class starts here
@@ -41,7 +46,7 @@ class gal
         }
 
     };
-    //
+    //background class ends here
 
 
     //animation class starts here
@@ -54,9 +59,14 @@ class gal
         sf::IntRect *retc;
         int x1,y1;
         Texture yan;
+        
     
     public:
-        anim(string st1, int sz1 , int sz2)
+        //public var declaration
+        float dhruv_x1 = 0,dhruv_y1 = 0;
+        string naam;
+
+        anim(string st1, int sz1 , int sz2, string n)
         {
             x1 = sz1;
             y1 = sz2;
@@ -75,6 +85,7 @@ class gal
                 s1.setTextureRect(*retc);
             }
             s1.setOrigin(33,33);
+            naam = n;
         }
          
         Sprite draw()
@@ -116,8 +127,67 @@ class gal
         {
             s1.setPosition(x,y);
         }
+        Vector2f getPosition()
+        {
+            return s1.getPosition();
+        }
+        void putspd(float x,float y)
+        {
+            dhruv_x1 = x;
+            dhruv_y1 = y;
+        }
     };
     // animation class ends here
+
+
+    //projectile starts here
+    class projectile
+    {
+        Sprite s1;
+        Texture tx;
+        float spd;
+        float rng;
+
+        
+    public:
+        
+        float dist = 0;
+
+        projectile(string str1, float orint, float speed, float range, float x, float y)
+        {
+            tx.loadFromFile(str1);
+            s1.setTexture(tx);
+            s1.setOrigin(3,3);
+            s1.setRotation(orint);
+            s1.setPosition(Vector2f(x,y));
+            spd = speed;
+            rng = range;
+        }
+
+        Sprite draw()
+        {
+            return s1;
+        };
+
+        void exec(float d_x, float d_y)
+        {
+            float x = spd*cos((s1.getRotation()+90)*PI/180);
+            float y = spd*sin((s1.getRotation()+90)*PI/180);
+            s1.move(-x + d_x, -y + d_y);
+            dist +=spd;
+        };
+
+        bool endol()
+        {
+            if(dist > rng) return true;
+            else return false;
+        };
+
+    };
+    // projectile class ends here
+
+
+
 
     // containers to store resources and variables
     RenderWindow *win;
@@ -126,6 +196,8 @@ class gal
     vector <int> atrl;
     vector < anim* > a1;
     vector < bg* > b1;
+    vector < projectile* > p1;
+    vector < ai* > ai1;
     View v1;
     //
 
@@ -165,6 +237,11 @@ private:
             for (size_t i = 0; i < b1.size(); i++)
             {
                 win->draw(b1[i]->draw());
+            }
+
+            for (size_t i = 0; i < p1.size(); i++)
+            {
+                win->draw(p1[i]->draw());
             }
 
             for (size_t i = 0; i < a1.size(); i++)

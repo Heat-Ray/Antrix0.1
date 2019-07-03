@@ -157,7 +157,7 @@ class gal
         {
             tx.loadFromFile(str1);
             s1.setTexture(tx);
-            s1.setOrigin(3,3);
+            s1.setOrigin(0.5,9.5);
             s1.setRotation(orint);
             s1.setPosition(Vector2f(x,y));
             spd = speed;
@@ -177,10 +177,24 @@ class gal
             dist +=spd;
         };
 
-        bool endol()
+        bool endol(vector < anim* > *a1)
         {
             if(dist > rng) return true;
-            else return false;
+            else 
+            {
+                for (vector <anim*>::iterator i = a1->begin()+1; i != a1->end(); i++)
+                {
+                    anim *h1 = *i;
+                    Vector2f pos = h1->getPosition();
+                    float b_x = s1.getPosition().x;
+                    float b_y = s1.getPosition().y;
+                    if((b_x>pos.x && b_x<pos.x+65) && (b_y>pos.y && b_y<pos.y+65))
+                    {
+                        return true;
+                    }
+                }
+                return false; 
+            }
         };
 
     };

@@ -1,3 +1,4 @@
+
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
 #include "gal.hpp"
@@ -18,6 +19,11 @@ public:
         a1->push_back(h1);
         a = a1;
     }
+    void think()
+    {
+        
+    }
+    
 };
 
 float yaan_ki_gatix=0,yaan_ki_gatiy=0;
@@ -30,16 +36,16 @@ float dhruv_x,dhruv_y,dhruv_x1,dhruv_y1;
 void gal::lvl1()
 {
     win = new RenderWindow(sf::VideoMode(1200, 600), "PR!");
-    anim *h1 = new anim("/home/heat/Antrix/Yaan1.png",65,65, "player");
+    anim *h1 = new anim("Yaan1.png",65,65, "player");
     h1->setPos(600,300);
     a1.push_back(h1);
-    b1.push_back(new bg("/home/heat/Antrix/spacebg.png"));
-    b1.push_back(new bg("/home/heat/Antrix/star.png"));
+    b1.push_back(new bg("spacebg.png"));
+    b1.push_back(new bg("star.png"));
 
     v1 = win->getDefaultView();
 
     //putting ai
-    ai1.push_back(new ai("/home/heat/Antrix/Yaan1.png", &a1));
+    ai1.push_back(new ai("Yaane.png", &a1));
 };
 
 void gal::suno()
@@ -162,14 +168,17 @@ void gal::socho()
                         }
                         break;
 
-            case 101:   string s1 = "/home/heat/Antrix/blt.png";
+            case 101:   string s1 = "blt.png";
                         if(p1.size()>0 && p1[p1.size()-1]->dist>200)
-                        p1.push_back(new projectile(s1, a1[0]->getRotation(), 16.0, 1000, a1[0]->getPosition().x, a1[0]->getPosition().y));
-                        if(p1.size()<1)
                         {
                             p1.push_back(new projectile(s1, a1[0]->getRotation(), 16.0, 1000, a1[0]->getPosition().x, a1[0]->getPosition().y));
                         }
                         
+                        if(p1.size()<1)
+                        {
+                            p1.push_back(new projectile(s1, a1[0]->getRotation(), 16.0, 1000, a1[0]->getPosition().x, a1[0]->getPosition().y));
+                        }
+                        break;
 
         }
         ctrl.erase(ctrl.begin());
@@ -189,7 +198,7 @@ void gal::karo()
     win->setView(v1);
     for (size_t i = 0; i < p1.size(); i++)
     {
-        if(p1[i]->endol()) p1.erase(p1.begin()+i);
+        if(p1[i]->endol(&a1)) p1.erase(p1.begin()+i);
         else p1[i]->exec(a1[0]->dhruv_x1, a1[0]->dhruv_y1);
     }
     

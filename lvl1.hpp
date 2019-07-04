@@ -203,3 +203,14 @@ void gal::karo()
     }
     
 }
+
+vector <gal::spaceDebris> gal::makeRocks(){
+    
+    vector <gal::spaceDebris> debrisObjectVector;
+    for (int i=0; i<20; i++)
+    {
+        gal::spaceDebris debrisObject(gal::a1);
+        debrisObjectVector.push_back(debrisObject);
+    }
+    return debrisObjectVector;
+}

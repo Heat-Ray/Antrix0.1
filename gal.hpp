@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
+#include <chrono>
 #define PI 3.14159265
 
 using namespace std;
@@ -200,8 +201,50 @@ class gal
     };
     // projectile class ends here
 
+    //spaceDebris class starts
+    class spaceDebris{
+        public:
+        sf::CircleShape debris;
+        int raidus = 20;
+        int debrisPositionX, debrisPositionY;
+        int minimumSpawnDistance = 500;
+        spaceDebris(vector < anim* > a1){
+            setRandomDebrisPosition(a1);
+            debris.setFillColor(sf::Color::Magenta);
+            debris.setRadius(raidus);
+            debris.setOrigin(raidus, raidus);
+            debris.setPosition(sf::Vector2f(debrisPositionX, debrisPositionY));
+        }
 
+        sf::Vector2f getDebrisPosition()
+        {
+            return debris.getPosition();
+        }
 
+        void setDebrisPosition(float x, float y)
+        {
+            debris.setPosition(sf::Vector2f(x, y));
+        }
+
+        void setRandomDebrisPosition(vector <anim *> a1)
+        {
+            srand(time(0)+rand());
+            if(rand() % 2){
+                debrisPositionX = a1[0]->getPosition().x + minimumSpawnDistance + (rand() % 1000);
+                debrisPositionY = a1[0]->getPosition().y + minimumSpawnDistance + (rand() % 1000);
+            }else{
+                debrisPositionX = a1[0]->getPosition().x - minimumSpawnDistance - (rand() % 1000);
+                debrisPositionY = a1[0]->getPosition().y - minimumSpawnDistance - (rand() % 1000);
+            }
+        }
+
+        int getRelativeDebrisPosition(vector < anim* > a1)
+        {
+            return sqrt((pow(abs(debris.getPosition().x - a1[0]->getPosition().x),2)) + (pow(abs(debris.getPosition().y - a1[0]->getPosition().y),2)));
+        }
+    }; 
+
+    //spaceDebris class ends
 
     // containers to store resources and variables
     RenderWindow *win;
@@ -212,11 +255,10 @@ class gal
     vector < bg* > b1;
     vector < projectile* > p1;
     vector < ai* > ai1;
+    vector <spaceDebris *> debrisVector;
+    vector <spaceDebris> makeRocks();
     View v1;
     //
-
-    
-
 
 public:
     //constructor
@@ -231,6 +273,9 @@ private:
     // renderloop
     void rendr()
     {
+        vector <spaceDebris> debrisObjectVector = makeRocks();
+        cout<<"Relative position "<<debrisObjectVector[0].getRelativeDebrisPosition(a1)<<endl;
+        cout<<debrisObjectVector[0].getDebrisPosition().x<<endl;
         win->setFramerateLimit(80);
         while(win->isOpen())
         {
@@ -261,6 +306,11 @@ private:
             for (size_t i = 0; i < a1.size(); i++)
             {
                 win->draw(a1[i]->draw());
+            }
+
+            for(int i=0; i<20; i++)
+            {
+                win->draw(debrisObjectVector[i].debris);
             }
             
             win->display();

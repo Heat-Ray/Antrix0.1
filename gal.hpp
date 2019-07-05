@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
-#include <chrono>
 #define PI 3.14159265
 
 using namespace std;
@@ -204,16 +203,21 @@ class gal
     //spaceDebris class starts
     class spaceDebris{
         public:
-        sf::CircleShape debris;
-        int raidus = 20;
+        sf::RectangleShape debris;
+        int length = 50;
         int debrisPositionX, debrisPositionY;
         int minimumSpawnDistance = 500;
-        spaceDebris(vector < anim* > a1){
+        int sign=1;
+        int debrisDirectionChance = 0;
+        sf::Texture debrisTexture;
+        spaceDebris(vector < anim* > a1, sf::String texturePath, int edgeLength){
+            length = edgeLength;
+            debrisTexture.loadFromFile(texturePath);
+            debrisTexture.setSmooth(true);
             setRandomDebrisPosition(a1);
-            debris.setFillColor(sf::Color::Magenta);
-            debris.setRadius(raidus);
-            debris.setOrigin(raidus, raidus);
-            debris.setPosition(sf::Vector2f(debrisPositionX, debrisPositionY));
+            debris.setTexture(&debrisTexture);
+            debris.setSize(sf::Vector2f(length, length));
+            debris.setOrigin(length, length);
         }
 
         sf::Vector2f getDebrisPosition()
@@ -229,13 +233,30 @@ class gal
         void setRandomDebrisPosition(vector <anim *> a1)
         {
             srand(time(0)+rand());
-            if(rand() % 2){
-                debrisPositionX = a1[0]->getPosition().x + minimumSpawnDistance + (rand() % 1000);
-                debrisPositionY = a1[0]->getPosition().y + minimumSpawnDistance + (rand() % 1000);
-            }else{
-                debrisPositionX = a1[0]->getPosition().x - minimumSpawnDistance - (rand() % 1000);
-                debrisPositionY = a1[0]->getPosition().y - minimumSpawnDistance - (rand() % 1000);
+            debrisDirectionChance = rand() % 100;
+            if(debrisDirectionChance >= 60)
+            {
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionX = a1[0]->getPosition().x + (minimumSpawnDistance + (rand() % 1000)) * sign;
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionY = a1[0]->getPosition().y + (minimumSpawnDistance + (rand() % 1000)) * sign;
             }
+            else if(debrisDirectionChance > 30 && debrisDirectionChance < 60)
+            {
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionX = a1[0]->getPosition().x + (rand() % 500) * sign;
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionY = a1[0]->getPosition().y + (minimumSpawnDistance + (rand() % 1000)) * sign;
+            }
+            else
+            {
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionX = a1[0]->getPosition().x + (minimumSpawnDistance + (rand() % 1000)) * sign;
+                sign = rand() % 2 ? 1 : -1;
+                debrisPositionY = a1[0]->getPosition().y + (rand() % 500) * sign;
+            }
+            
+            debris.setPosition(sf::Vector2f(debrisPositionX, debrisPositionY));
         }
 
         int getRelativeDebrisPosition(vector < anim* > a1)
@@ -274,8 +295,6 @@ private:
     void rendr()
     {
         vector <spaceDebris> debrisObjectVector = makeRocks();
-        cout<<"Relative position "<<debrisObjectVector[0].getRelativeDebrisPosition(a1)<<endl;
-        cout<<debrisObjectVector[0].getDebrisPosition().x<<endl;
         win->setFramerateLimit(80);
         while(win->isOpen())
         {
@@ -308,8 +327,14 @@ private:
                 win->draw(a1[i]->draw());
             }
 
-            for(int i=0; i<20; i++)
+            for(int i=0; i<50; i++)
             {
+                
+                debrisObjectVector[i].debris.setTexture(&debrisObjectVector[i].debrisTexture);
+                if(debrisObjectVector[i].getRelativeDebrisPosition(a1) > 2000)
+                {
+                    debrisObjectVector[i].setRandomDebrisPosition(a1);
+                }
                 win->draw(debrisObjectVector[i].debris);
             }
             

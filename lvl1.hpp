@@ -207,9 +207,11 @@ void gal::karo()
 vector <gal::spaceDebris> gal::makeRocks(){
     
     vector <gal::spaceDebris> debrisObjectVector;
-    for (int i=0; i<20; i++)
+    int edgeLength = 120;   //Our debris is rectangular
+    sf::Texture texture;
+    for (int i=0; i<50; i++)
     {
-        gal::spaceDebris debrisObject(gal::a1);
+        gal::spaceDebris debrisObject(gal::a1, "rocks.png", edgeLength);
         debrisObjectVector.push_back(debrisObject);
     }
     return debrisObjectVector;
